@@ -1,0 +1,15 @@
+.img-border {
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.btn-extract {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.title {
+    margin-top: 8px;
+}
+

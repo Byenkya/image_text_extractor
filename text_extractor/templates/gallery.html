@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Gallery</h2>
+  <div class="row">
+    {% for image_file in image_files %}
+      <div class="col-md-4">
+        <div class="image-container img-border">
+          <h6 class="title">File name: {{ image_file }}</h6><hr/>
+          <img src="{{ url_for('static', filename='uploads/' + image_file) }}" alt="{{ image_file }}" class="img-fluid" style="cursor: pointer; width: 100%;" onclick="viewImage('{{ url_for('static', filename='uploads/' + image_file) }}')">
+          <form method="POST" action="{{ url_for('gallery') }}">
+            {{ form.csrf_token }}
+            {{ form.image_name(class="form-control", type="hidden", value=image_file) }}
+            {{ form.submit(class="btn btn-primary btn-extract", onclick="setFormValue(this.previousElementSibling.value)") }}
+          </form>
+        </div>
+      </div>
+      {% if loop.index % 3 == 0 %}
+        </div>
+        <div class="row">
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <script>
+    function setFormValue(imageName) {
+      var form = document.querySelector('form');
+      var input = form.querySelector('input[name="image_name"]');
+      input.value = imageName;
+    }
+
+    function viewImage(imageUrl) {
+      var popupWindow = window.open(imageUrl, '_blank');
+      popupWindow.focus();
+    }
+  </script>
+{% endblock %}
+

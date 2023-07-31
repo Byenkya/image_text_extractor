@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('index') }}" enctype="multipart/form-data">
+  {{ form.csrf_token }}
+  {{ form.file.label(class="form-label h4")  }}<br> 
+  {{ form.file(class="form-control", id="fileInput") }}
+  {% for error in form.file.errors %}
+    <span class="error">{{ error }}</span>
+  {% endfor %}
+  
+  {{ form.submit(class="btn btn-primary btn-extract") }}
+</form>
+{% endblock %}
