@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <br/>
+    <form method="POST" action="{{ url_for('index') }}" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        {{ form.file.label(class="form-label h4")  }}<br> 
+        {{ form.file(class="form-control", id="fileInput") }}
+        {% for error in form.file.errors %}
+          <span class="error">{{ error }}</span>
+        {% endfor %}
+        
+        {{ form.submit(class="btn btn-primary btn-extract") }}
+      </form>
+      <hr/>
+    <h3 class="mt-4">Uploaded Images</h3>
+    <div class="row">
+        {% for image in user_images %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" class="card-img-top" alt="{{ image.filename }}">
+                    <div class="card-body">
+                        <p class="card-text">{{ image.filename }}</p>
+                        <div class="row">
+                            <div class="col-md-6"><a href="#" class="btn btn-primary custom-btn">Extract Text</a></div>
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-danger custom-btn" data-bs-toggle="modal" data-bs-target="#deleteImageModal" data-image-id="{{ image.id }}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- Add text extraction and logout options here -->
+{% endblock %}
