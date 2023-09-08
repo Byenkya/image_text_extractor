@@ -1,5 +1,3 @@
-import os
-
 with open('text_extractor/secret.key', 'r') as f:
     secret_key = f.read().strip()
 

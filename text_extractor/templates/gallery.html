@@ -11,9 +11,16 @@
             <img src="{{ url_for('static', filename='uploads/' + image_file.filename) }}" alt="{{ image_file.filename }}" class="img-fluid" style="cursor: pointer; width: 100%;" onclick="viewImage('{{ url_for('static', filename='uploads/' + image_file.filename) }}')">
             <form method="POST" action="{{ url_for('gallery') }}">
               {{ form.csrf_token }}
-              {{ form.image_name(class="form-control", type="hidden", value=image_file) }}
-              {{ form.submit(class="btn btn-primary btn-extract", onclick="setFormValue(this.previousElementSibling.value)") }}
+              {{ form.image_name(class="form-control", type="hidden", value=image_file.id) }}
+              {{ form.submit(class="btn btn-primary btn-extract") }}
             </form>
+            <div class="handwritten-segments">
+              {% if hand_written_segments and image_name == image_file.filename %}
+                <h6 class="title">Extracted Data:</h6>
+                <textarea id="segments-textarea" class="form-control" rows="10">{{ hand_written_segments }}</textarea>
+                <button class="btn btn-primary btn-save btn-extract mt-2" onclick="saveSegments()">Save to Text File</button>
+              {% endif %}
+            </div>
           </div>
         </div>
         {% if loop.index % 3 == 0 %}
@@ -24,7 +31,6 @@
     {% else %}
       <h4 style="color: burlywood;">No images found!!</h4>
     {% endif %}
-  </div>
 
   <script>
     function setFormValue(imageName) {
@@ -32,11 +38,49 @@
       var input = form.querySelector('input[name="image_name"]');
       input.value = imageName;
     }
-
+  
     function viewImage(imageUrl) {
       var popupWindow = window.open(imageUrl, '_blank');
       popupWindow.focus();
     }
-  </script>
-{% endblock %}
 
+    function formatSegments(segmentsContent) {
+      // Split the content by newline characters
+      var lines = segmentsContent.split('\n');
+
+      // Trim each line to remove leading and trailing whitespace
+      for (var i = 0; i < lines.length; i++) {
+        lines[i] = lines[i].trim();
+      }
+
+      // Join the lines with proper line breaks (newline characters)
+      return lines.join('\n');
+    }
+  
+    function saveSegments() {
+      // Get the content of the textarea
+      var segmentsContent = document.getElementById('segments-textarea').value;
+
+      // Format the segments content
+      var formattedSegments = formatSegments(segmentsContent);
+
+      // Create a Blob containing the formatted content
+      var blob = new Blob([formattedSegments], { type: 'text/plain' });
+  
+      // Create a temporary anchor element to trigger the download
+      var a = document.createElement('a');
+      a.href = window.URL.createObjectURL(blob);
+      a.download = 'handwritten_segments.txt';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+  
+      // Trigger the download
+      a.click();
+  
+      // Clean up
+      document.body.removeChild(a);
+
+    }
+  </script>
+  
+{% endblock %}

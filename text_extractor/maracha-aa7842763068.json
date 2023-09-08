@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "maracha",
+  "private_key_id": "aa7842763068595ee1a5924eb3fc7142ebbac0b9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCkWHlpbgdRm8kz\nF5IBg5KUg7jrsJ+s5ZNQBfV4ECetR7whuSaG4fiMTDMahD4Zzus4QJwg7NCdmq8Q\ndc38Q9KMQ8f3ECeWHv7a0iQ3A7LBKhjjVLdPAuWj44cXKZBqgnHLa0/Shhkq+rCK\nM6gwqOf4JkBYqqiG3uWuSj01jJ7ieApSlY2geXeOzxlQE1S1NRtMmXMsMcSx28UO\naNrOrfzRMzuxPoNEkUZVOgxXw+o7XhbZXQzjAVZlUDq0rWl0NJ2GG30SayxZIuEy\nmbljwtVDBQXNerTF8I4+mInd4x+EFor3BmlIuetGNQvoVe7KEmim2z6TQS5rcvck\nsRkazrAVAgMBAAECggEAAPsrPGMlBYpzzMuI+lvV+e+AYN3U0jQrqThj4wPbrMfn\nGl9v2LHMKVBCJNghw8cttdAC7ppjU3GLNoKxiF5CSUaVUMcGqXmFZXqIL1DlFgyh\nieflUUIv60bONWfw3gXp1oBNQXE+ALju6WBOEn5LpjpaO31HVMjLX7s/OszcXPc+\ni4J8SsgM0CTsg24TJlIcZ0vXgOQexmFJ/93Hf2NJdzJkFz6jpfyNsJYfh3IxEEf6\n8IaeGAMSTLokFff9Ui8D3rGG92KezVtODYWzhAe3hNjnVHS/KD1Ha06p1lGweOzW\nQByd/CFp6/ZK0rSooyGDGVqGQizQH+p+044m8Rr3UQKBgQDP5sY0RxafFl6HP383\njWO1v+fTVfetMpsDVjK8YD2PD8DGEOAi96Qf+mtdzHYdWdZmFnsFpWj87VgRSUo6\nCSSvdzFp3dcHE9ADlhwNTVq28TnG6XCDDdF9rbdjicMuSmiWHOZfZQ5Y9MKMnag0\nqmaAm+74Qa3rPUBsZ9tcQ/LDRQKBgQDKXgyoLsujLi8JPtBCMUxspOgQOe3BdGo4\nihBB+2vH5dr2HDXg9ExmjKhUNCLF3WlymPgyVysz0Fco22OmY870TSQ0TjQqhTZ2\nV8kOkuayJvyxpqXYveNrIcF8DhiN278uTTUTtKBAHpkUJjZq7QcyO0Ll1ywDEk+A\nEmaBnnwekQKBgQDJog8vGpcU+fP6BhpS/XzsA9BKBkFtJ/xxcwNH8asieevD7RAE\nudri7NN+qFMRylSGtFziL/ev/l0Afu1PdhivWNGC1JW8lnmTUN2qBRDrBu+7PCJT\n6G36DyYikrTKy329wQ+pC3Cr085v5GQDmBRLvXA6NDECSmiV+vAj/v6OZQKBgCxR\n1rHKtdyCE9kRgajNhTBSGWTcWv7AUTcavZ7FwoAgDglSelZPCqB287KlTGxLJnnr\nmIfl4VdSrJQNIFDjkQKeFmzCJ9icHiZi6WygrZecxEDf/3htde4TkX1q1OPUmZU5\nYYN0TphcWyg3ijl2udm9ctRFgKUXkIO7A+olXIeRAoGBAIi9NTMkH/Tvs5dFrKQ4\n4e0215sp3DpM4fqnnSy5rt7wW9B2JCr5CcoSGryWKs9HQbO/t9l3Q50/v71lN8m1\nHmB7TdF/zLkZv59M2VvSpHCl/AQlv3PsJtvUJTJeAJxTrBMHjEbyTFHk8A4wmBTQ\nwWUVLpmFJ3E7AEIkjhzWivJz\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloud-api@maracha.iam.gserviceaccount.com",
+  "client_id": "103487789395335273748",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-api%40maracha.iam.gserviceaccount.com"
+}

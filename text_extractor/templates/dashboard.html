@@ -22,9 +22,24 @@
                     <div class="card-body">
                         <p class="card-text">{{ image.filename }}</p>
                         <div class="row">
-                            <div class="col-md-6"><a href="#" class="btn btn-primary custom-btn">Extract Text</a></div>
                             <div class="col-md-6">
-                                <a href="#" class="btn btn-danger custom-btn" data-bs-toggle="modal" data-bs-target="#deleteImageModal" data-image-id="{{ image.id }}">Delete</a>
+                                <form method="POST" action="{{ url_for('gallery') }}">
+                                    {{ image_form.csrf_token }}
+                                    {{ image_form.image_name(class="form-control", type="hidden", value=image.id) }}
+                                    {{ image_form.submit(class="btn btn-primary btn-extract") }}
+                                </form>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-danger custom-btn mt-2" data-bs-toggle="modal" data-bs-target="#deleteImageModal" data-image-id="{{ image.id }}">Delete</a>
+                            </div>
+
+                            <div class="handwritten-segments">
+                                {% if hand_written_segments and image_name == image.filename %}
+                                  <h6 class="title">Extracted Data:</h6>
+                                  <textarea id="segments-textarea" class="form-control" rows="10">{{ hand_written_segments }}</textarea>
+                                  <button class="btn btn-primary btn-save btn-extract mt-2" onclick="saveSegments()">Save to Text File</button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

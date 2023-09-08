@@ -9,12 +9,24 @@ from flask import (
 )
 from flask.views import MethodView
 from werkzeug.utils import secure_filename
-from .forms import UploadForm, ImageForm, UserCreationForm, LoginForm, ImageCaptureForm
+from .forms import (
+    UploadForm, 
+    ImageForm, 
+    UserCreationForm, 
+    LoginForm, 
+    ImageCaptureForm
+)
 from text_extractor import app, db
 from .models import User, Image
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import (
+    login_user, 
+    login_required, 
+    logout_user, 
+    current_user
+)
 from text_extractor.utils import delete_image_file
-
+import uuid
+from  .text_image_fucntionality import TextExtractor
 
 class LoginView(MethodView):
     def get(self):
@@ -75,15 +87,29 @@ class ImageViewerView(MethodView):
     
     def get(self):
         form = UploadForm()
+        image_form = ImageForm()
         user_images = Image.query.filter_by(user_id=current_user.id).all()
-        return render_template('dashboard.html', form=form, user_images=user_images)
+        return render_template(
+            'dashboard.html',
+            form=form, 
+            user_images=user_images,
+            image_form = image_form,
+            hand_written_segments=None
+        )
     
     def post(self):
-        form = UploadForm()  
+        form = UploadForm()
         if form.validate_on_submit():
             file = form.file.data
-            if file: 
-                filename = secure_filename(file.filename)
+            if file:
+                # Generate a unique identifier
+                unique_identifier = str(uuid.uuid4())
+                # Get the file extension
+                file_extension = os.path.splitext(file.filename)[1]
+                # Create a unique filename by combining the identifier and extension
+                filename = f"{unique_identifier}{file_extension}"
+
+                # Save the file with the unique filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
                 new_image = Image(filename=filename, user=current_user)
@@ -96,35 +122,55 @@ class ImageViewerView(MethodView):
 
 class GalleryView(MethodView):  
     decorators = [login_required]
-
     def get(self):
         #image_files = os.listdir(app.config['UPLOAD_FOLDER'])
         form = ImageForm()
         if current_user.is_authenticated:
             # Retrieve images for the current user only
             user_images = Image.query.filter_by(user_id=current_user.id).all()
+
             return render_template(
                 'gallery.html', 
                 image_files=user_images, 
                 form=form,
                 enumerate=enumerate,
-                str=str
-                )
+                str=str,
+                image_name=None
+            )
         else:
             return render_template(
                 'gallery.html',
                 image_files=None,
                 form=form,
                 enumerate=enumerate,
-                str=str
+                str=str,
+                image_name=None
             )
     
     def post(self):
         form = ImageForm()
         if form.validate_on_submit():
-            image_name = form.image_name.data
-            # logic of extraction goes here
-            flash(f"Button pressed for image: {image_name}", "info")
+            data = ""
+            image_id = form.image_name.data
+            image = Image.query.filter_by(id=image_id).first()
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename) 
+            text_extractor = TextExtractor(image_path)
+            hand_written_segments = text_extractor.extract_handwritten_segments()
+
+            for segment in hand_written_segments:
+                data+=segment['text']
+
+            user_images = Image.query.filter_by(user_id=current_user.id).all()
+            return render_template(
+                'gallery.html',
+                image_files=user_images,
+                form=form,
+                hand_written_segments=data,
+                enumerate=enumerate,
+                str=str,
+                image_name=image.filename
+            )
+            
         else:
             flash('Invalid form submission', 'danger')
         
