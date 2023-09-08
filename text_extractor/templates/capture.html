@@ -1,30 +1,57 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <br/>
-    <div id="camera"></div>
-    <button onclick="take_snapshot()">Take Snapshot</button>
-    <div id="results"></div>
+    <style>
+        .webcam-card, .image-card {
+            padding: 15px;
+        }
+    </style>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="card webcam-card">
+                    <div class="card-header">
+                        Webcam Preview
+                    </div>
+                    <div class="card-body">
+                        <div id="camera"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="card image-card">
+                    <div class="card-header">
+                        Captured Image
+                    </div>
+                    <div class="card-body">
+                        <div id="results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="take_snapshot()" class="btn btn-primary mt-3">Take Snapshot</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <script>
-
-        // load our web cam
+        // Load our web cam and configure it
         Webcam.set({
             width: 350,
             height: 350,
             image_format: 'jpeg',
             jpeg_quality: 90,
             force_flash: false,
-        })
-        Webcam.attach("#camera")
+        });
+        Webcam.attach("#camera");
 
-        // add audio when taking the picture
-
+        // Define the take_snapshot function
         function take_snapshot() {
             Webcam.snap(function(data_uri){
-                document.getElementById("results").innerHTML = '<img src=">' + data_uri + '"/>';
-            })
+                // Set the captured image to the 'results' div
+                document.getElementById("results").innerHTML = '<img src="' + data_uri + '"/>';
+            });
         }
     </script>
 {% endblock %}
