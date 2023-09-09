@@ -183,30 +183,46 @@ class CaptureImageView(MethodView):
     decorators = [login_required]
 
     def get(self):
-        form = ImageCaptureForm()
+        form = UploadForm()
         return render_template('capture.html', form=form)
 
     def post(self):
-        # Extract the image data from the request JSON
-        image_data_uri = request.json.get('image_data_uri')
-        
-        # Check if the image data is provided
-        if image_data_uri:
-            # You can save the image data to a file or process it as needed
-            # For example, to save it as a file, you can use a unique filename
-            unique_filename = f"user_{current_user.id}_image.jpg"
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            
-            # Decode and save the base64-encoded image data
-            with open(image_path, 'wb') as image_file:
-                image_data = base64.b64decode(image_data_uri.split(',')[1])
-                image_file.write(image_data)
-            
-            # You can perform further processing or database operations here
-            
-            return jsonify({'success': True, 'image_url': image_path})
+        form = UploadForm()
+        if form.validate_on_submit():
+            # Process the uploaded image data
+            image_data = request.form.get('image_data')
+
+            if image_data:
+                # Generate a unique identifier
+                unique_identifier = str(uuid.uuid4())
+
+                # Get the file extension (assuming it's a JPEG image)
+                file_extension = '.jpg'
+
+                # Create a unique filename by combining the identifier and extension
+                filename = f"{unique_identifier}{file_extension}"
+
+                # Save the image data to a file with the unique filename
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+                # Decode and save the base64-encoded image data to the file
+                with open(file_path, 'wb') as image_file:
+                    image_data_bytes = base64.b64decode(image_data.split(',')[1])
+                    image_file.write(image_data_bytes)
+
+                # You can perform further processing or database operations here
+                # For example, you can save the file path or image metadata in your database
+                new_image = Image(filename=filename, user=current_user)
+                db.session.add(new_image)
+                db.session.commit()
+
+                flash('Image captured and processed successfully!', 'success')
+                return redirect(url_for('capture_image'))  # Replace with your desired route
         else:
-            return jsonify({'success': False, 'error': 'Image data not provided'}), 400
+            flash('Invalid form submission', 'danger')
+
+        # If form submission fails, return to the capture page with the form
+        return render_template('capture.html', form=form)
 
 
 class DeleteImageView(MethodView):

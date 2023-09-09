@@ -1,43 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <style>
-        .webcam-card, .image-card {
-            padding: 15px;
-        }
-    </style>
-
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-sm-12">
-                <div class="card webcam-card">
+            <div class="col-md-6 col-sm-6">
+                <div class="card">
                     <div class="card-header">
                         Webcam Preview
                     </div>
                     <div class="card-body">
                         <div id="camera"></div>
+                        <button class="btn btn-primary mt-3" onclick="take_snapshot()">Take Snapshot</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12">
-                <div class="card image-card">
+            <div class="col-md-6 col-sm-6">
+                <div class="card">
                     <div class="card-header">
                         Captured Image
                     </div>
                     <div class="card-body">
                         <div id="results"></div>
+                        <!-- Add a button to save the image and trigger form submission -->
+                        <button id="saveImageButton" class="btn btn-success mt-3" style="display: none;" onclick="save_image()">Save Image</button>
                     </div>
                 </div>
             </div>
         </div>
-        <form id="imageForm" action="{{ url_for('capture_image') }}" method="POST" enctype="multipart/form-data">
-            <input type="file" accept="image/*" capture="user" id="imageInput" name="imageFile" style="display: none;">
-            <button type="button" onclick="take_snapshot()">Take Snapshot</button>
-            <input type="submit" value="Upload Image" style="display: none;">
-        </form>
     </div>
 
-   
+    <form id="uploadForm" method="POST" enctype="multipart/form-data" class="hidden-form">
+        {{ form.hidden_tag() }}
+        <input type="hidden" name="image_data" id="image_data">
+    </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <script>
@@ -52,69 +47,23 @@
         Webcam.attach("#camera");
 
         // Define the take_snapshot function
-        // function take_snapshot() {
-        //     Webcam.snap(function(data_uri){
-        //         // Set the captured image to the 'results' div
-        //         document.getElementById("results").innerHTML = '<img src="' + data_uri + '"/>';
-        //     });
-        // }
-
         function take_snapshot() {
             Webcam.snap(function(data_uri){
                 // Set the captured image to the 'results' div
                 document.getElementById("results").innerHTML = '<img src="' + data_uri + '"/>';
-                
-                // Convert the data URI to a Blob
-                var blob = dataURItoBlob(data_uri);
-                
-                // Create a FormData object and append the Blob as 'imageFile'
-                var formData = new FormData();
-                formData.append('imageFile', blob, 'snapshot.jpg');
-                
-                // Set the FormData as the form's data and submit the form
-                var form = document.getElementById("imageForm");
-                form.addEventListener("submit", function(event) {
-                    event.preventDefault();
-                    
-                    // Send the FormData to the server
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Handle a successful server response, if needed
-                            alert('Image uploaded successfully!');
-                        } else {
-                            // Handle the case where the server encountered an error
-                            alert('Failed to upload the image.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while processing the request.');
-                    });
-                });
 
-                // Trigger form submission
-                form.dispatchEvent(new Event('submit'));
+                // Set the captured image data to the hidden input
+                document.getElementById("image_data").value = data_uri;
+
+                // Show the "Save Image" button after taking a snapshot
+                document.getElementById("saveImageButton").style.display = "block";
             });
         }
 
-
-        // Function to convert a data URI to a Blob
-        function dataURItoBlob(dataURI) {
-            var byteString = atob(dataURI.split(',')[1]);
-            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-            var ab = new ArrayBuffer(byteString.length);
-            var ia = new Uint8Array(ab);
-            for (var i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            var blob = new Blob([ab], { type: mimeString });
-            return blob;
+        // Define the save_image function to trigger form submission
+        function save_image() {
+            // Submit the hidden form
+            document.getElementById("uploadForm").submit();
         }
-
     </script>
 {% endblock %}
