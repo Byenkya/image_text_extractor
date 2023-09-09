@@ -5,7 +5,8 @@ from flask import (
     request, 
     flash,
     redirect,
-    url_for
+    url_for,
+    jsonify
 )
 from flask.views import MethodView
 from werkzeug.utils import secure_filename
@@ -27,6 +28,7 @@ from flask_login import (
 from text_extractor.utils import delete_image_file
 import uuid
 from  .text_image_fucntionality import TextExtractor
+import base64
 
 class LoginView(MethodView):
     def get(self):
@@ -185,31 +187,26 @@ class CaptureImageView(MethodView):
         return render_template('capture.html', form=form)
 
     def post(self):
-        form = ImageCaptureForm(request.form)
-        if form.validate_on_submit():
-            username = form.username.data
-            password = form.password.data
-            image_data = form.image_data.data  # Get the base64 encoded image data
-
-            # Check if the username is already taken
-            if User.query.filter_by(username=username).first():
-                flash('Username already exists. Please choose a different username.', 'error')
-                return redirect(url_for('capture_image'))
-
-            # Create a new user
-            user = User(username=username)
-            user.set_password(password)  # Set the hashed password
-            db.session.add(user)
-            db.session.commit()
-
-            # Save the image on the server (optional)
-            if image_data:
-                save_image_on_server(image_data, username)
-
-            flash('User created successfully!', 'success')
-            return redirect(url_for('capture_image'))
-
-        return render_template('capture.html', form=form)
+        # Extract the image data from the request JSON
+        image_data_uri = request.json.get('image_data_uri')
+        
+        # Check if the image data is provided
+        if image_data_uri:
+            # You can save the image data to a file or process it as needed
+            # For example, to save it as a file, you can use a unique filename
+            unique_filename = f"user_{current_user.id}_image.jpg"
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            
+            # Decode and save the base64-encoded image data
+            with open(image_path, 'wb') as image_file:
+                image_data = base64.b64decode(image_data_uri.split(',')[1])
+                image_file.write(image_data)
+            
+            # You can perform further processing or database operations here
+            
+            return jsonify({'success': True, 'image_url': image_path})
+        else:
+            return jsonify({'success': False, 'error': 'Image data not provided'}), 400
 
 
 class DeleteImageView(MethodView):
@@ -233,3 +230,8 @@ class DeleteImageView(MethodView):
                 flash("An error occured while deleteting the image", "danger")
         
         return redirect(url_for('index'))
+
+
+    
+
+
