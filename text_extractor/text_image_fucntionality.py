@@ -15,10 +15,10 @@ pd.options.display.float_format = '{:,.2f}'.format
 
 # Set Tesseract OCR path
 # For linux i.e ubuntu
-#pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 # For windows 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Set Google Cloud Vision API credentials
 directory = os.path.abspath(__file__).replace("text_image_fucntionality.py", "")

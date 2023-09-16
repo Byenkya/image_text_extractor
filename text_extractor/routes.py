@@ -29,6 +29,7 @@ from text_extractor.utils import delete_image_file
 import uuid
 from  .text_image_fucntionality import TextExtractor
 import base64
+import textwrap
 
 class LoginView(MethodView):
     def get(self):
@@ -159,8 +160,19 @@ class GalleryView(MethodView):
             text_extractor = TextExtractor(image_path)
             hand_written_segments = text_extractor.extract_handwritten_segments()
 
-            for segment in hand_written_segments:
-                data+=segment['text']
+            for i, segment in enumerate(hand_written_segments, start=1):
+                 # Format the extracted text for each segment
+                segment_text = segment['text']
+                wrapped_text = textwrap.wrap(segment_text, width=70)  # Adjust line width as needed
+
+                # Add a header for each segment
+                formatted_segment_text = f"Segment {i} - Handwritten Text:\n"
+
+                # Indent the text within the segment
+                formatted_segment_text += '\n'.join(['    ' + line for line in wrapped_text])
+                formatted_segment_text += '\n\n'
+
+                data += formatted_segment_text
 
             user_images = Image.query.filter_by(user_id=current_user.id).all()
             return render_template(
